@@ -1,33 +1,57 @@
 package org.schiano.e_commerce.controller;
 
+import java.util.List;
+
 import org.schiano.e_commerce.dto.NuovoProdottoDTO;
+import org.schiano.e_commerce.dto.ProdottoDTO;
+import org.schiano.e_commerce.model.Categoria;
+import org.schiano.e_commerce.service.definition.CategoriaService;
 import org.schiano.e_commerce.service.definition.ProdottoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/prodotto")
+@RequestMapping("/prodotti")
 public class ProdottoController {
-	
-	@Autowired
-	private ProdottoService prodottoS;
-	
-	@PostMapping("/admin/insert")
-	public ResponseEntity<Void> inserisciProdotto(@RequestBody NuovoProdottoDTO prodotto){
-		try {
-			prodottoS.insert(prodotto);
-			return ResponseEntity.ok().build();
-		}
-		catch(Exception e) {
-			return ResponseEntity.badRequest().build();
-		}
-	}
-	
-	
-	
 
+    @Autowired
+    private ProdottoService prodottoS;
+
+    @Autowired
+    private CategoriaService categoriaS;
+
+    @PostMapping("/admin/inserisci")
+    public ResponseEntity<Void> inserisciProdotto(@RequestBody NuovoProdottoDTO prodotto) {
+        try {
+            Categoria cat = categoriaS.getById(prodotto.getCategoria_id());
+            prodottoS.insert(prodotto, cat);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+        	 e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    
+    
+    
+    @GetMapping("/visualizza")
+    public ResponseEntity<List<ProdottoDTO>> getAllProdotti() {
+        List<ProdottoDTO> prodotti = prodottoS.getAllDTO();
+        return ResponseEntity.ok(prodotti);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

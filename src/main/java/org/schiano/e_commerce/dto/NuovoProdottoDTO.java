@@ -1,5 +1,7 @@
 package org.schiano.e_commerce.dto;
 
+import org.schiano.e_commerce.model.Categoria;
+
 // import jakarta.validation.constraints.*; // ← Scommenta quando attivi la validazione
 
 import lombok.AllArgsConstructor;
@@ -26,5 +28,5 @@ public class NuovoProdottoDTO {
     private String nomeImmagine;
 
     // @NotNull
-    private Integer categoriaId;
+    private Long categoria_id;
 }
