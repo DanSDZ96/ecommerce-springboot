@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
-    // ✅ Controlla se esiste già una categoria con un certo nome
-    boolean existsByNome(String nome);
+    // Controlla se una categoria esiste già
+    boolean isPresentByNome(String nome);
 
-    // (Opzionale) Trova una categoria specifica per nome
+    // Trova una categoria partendo dal nome
     Categoria findByNome(String nome);
 }

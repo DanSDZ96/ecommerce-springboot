@@ -22,7 +22,7 @@ public class CategoriaServiceJPA implements CategoriaService {
     @Override
     public void insert(InserimentoCategoriaDTO dto) {
         Categoria categoria = categoriaMapper.fromInsertCategoriaDTO(dto);
-        repository.save(categoria);
+        create(categoria);
     }
 
     @Override
