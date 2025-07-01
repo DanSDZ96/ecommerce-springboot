@@ -37,14 +37,12 @@ public class ProdottoServiceJPA implements ProdottoService {
 
 	@Override
 	public List<Prodotto> getAll() {
-		// TODO Auto-generated method stub
-		return null;
+	    return prodRepo.findAll();
 	}
 
 	@Override
 	public Prodotto getById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	    return prodRepo.findById(id).orElse(null);
 	}
 
 	@Override
@@ -55,8 +53,7 @@ public class ProdottoServiceJPA implements ProdottoService {
 
 	@Override
 	public void delete(Long id) {
-		// TODO Auto-generated method stub
-		
+		prodRepo.deleteById(id);
 	}
 
 	@Override
