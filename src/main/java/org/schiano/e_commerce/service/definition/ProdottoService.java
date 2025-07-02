@@ -9,7 +9,7 @@ import org.schiano.e_commerce.model.Prodotto;
 
 public interface ProdottoService extends GeneralService<Prodotto> {
 	
-	void insert(NuovoProdottoDTO prodotto, Categoria cat) throws Exception;
+	void insert(NuovoProdottoDTO prodotto, Categoria cat); // throws Exception;
 	List<ProdottoDTO> getAllDTO();
 
 	

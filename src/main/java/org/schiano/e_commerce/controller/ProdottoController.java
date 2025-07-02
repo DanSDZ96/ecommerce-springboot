@@ -5,6 +5,7 @@ import java.util.List;
 import org.schiano.e_commerce.dto.NuovoProdottoDTO;
 import org.schiano.e_commerce.dto.ProdottoDTO;
 import org.schiano.e_commerce.dto.RimuoviProdottoDTO;
+import org.schiano.e_commerce.error.exceptions.NessunRisultatoException;
 import org.schiano.e_commerce.model.Categoria;
 import org.schiano.e_commerce.service.definition.CategoriaService;
 import org.schiano.e_commerce.service.definition.ProdottoService;
@@ -31,18 +32,18 @@ public class ProdottoController {
 
     @PostMapping("/admin/inserisci")
     public ResponseEntity<Void> inserisciProdotto(@Valid @RequestBody NuovoProdottoDTO prodotto) {
-        try {
+    //  try {
             Categoria cat = categoriaS.getById(prodotto.getCategoria_id());
             prodottoS.insert(prodotto, cat);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
-        	 e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
+    // } catch (Exception e) {
+    //		e.printStackTrace();
+    //		return ResponseEntity.badRequest().build();
+    // }
     }
     
     @DeleteMapping("/admin/rimuovi")
-    public ResponseEntity<Void> rimuoviProdotto(@RequestBody RimuoviProdottoDTO prod) {
+    public ResponseEntity<Void> rimuoviProdotto(@RequestBody @Valid RimuoviProdottoDTO prod) {
     	try {
     		prodottoS.delete(prod.getId());
     		return ResponseEntity.ok().build();
@@ -56,13 +57,17 @@ public class ProdottoController {
     
     
     @GetMapping("/visualizza")
-    public ResponseEntity<List<ProdottoDTO>> getAllProdotti() {
-        List<ProdottoDTO> prodotti = prodottoS.getAllDTO();
+    public ResponseEntity<List<ProdottoDTO>> getAllProdotti() throws NessunRisultatoException {	//throws qui è superfluo
+        List<ProdottoDTO> prodotti = prodottoS.getAllDTO();										//ma lo metto per completezza
+    
+    
+        if (prodotti == null || prodotti.isEmpty()) {
+            throw new NessunRisultatoException("Nessun prodotto disponibile al momento.");
+        }
+
         return ResponseEntity.ok(prodotti);
     }
-    
-    
-    
+
     
     
     

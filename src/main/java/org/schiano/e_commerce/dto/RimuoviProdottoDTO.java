@@ -1,5 +1,6 @@
 package org.schiano.e_commerce.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RimuoviProdottoDTO {
-	private Long id;
-	
 
+    @NotNull(message = "L'ID del prodotto da rimuovere è obbligatorio")
+    private Long id;
 }
