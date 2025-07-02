@@ -11,14 +11,20 @@ import org.schiano.e_commerce.service.definition.CategoriaService;
 import org.schiano.e_commerce.service.definition.ProdottoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+@Tag(
+		name = "Prodotti", 
+		description = "Gestione dei prodotti: visualizzazione, inserimento e rimozione"
+	)
+
 
 @RestController
 @RequestMapping("/prodotti")
@@ -30,44 +36,87 @@ public class ProdottoController {
     @Autowired
     private CategoriaService categoriaS;
 
+    @Operation(
+        summary = "Inserisce un nuovo prodotto (Admin)",
+        description = "Riceve un oggetto contenente i dati di un nuovo prodotto e l'ID di una categoria esistente. "
+                    + "Se la categoria esiste, il prodotto viene inserito e viene restituito stato 200. "
+                    + "Se i dati sono incompleti o la categoria non esiste, viene restituito errore."
+    )
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						responseCode = "200", 
+    						description = "Prodotto inserito correttamente"
+    						),
+    				@ApiResponse(
+    						responseCode = "400", 
+    						description = "Dati non validi o categoria non trovata"
+    						
+    						//TODO aggiungere CONTENT + SCHEMA
+    						)
+    				}
+    		)
     @PostMapping("/admin/inserisci")
     public ResponseEntity<Void> inserisciProdotto(@Valid @RequestBody NuovoProdottoDTO prodotto) {
-    //  try {
-            Categoria cat = categoriaS.getById(prodotto.getCategoria_id());
-            prodottoS.insert(prodotto, cat);
-            return ResponseEntity.ok().build();
-    // } catch (Exception e) {
-    //		e.printStackTrace();
-    //		return ResponseEntity.badRequest().build();
-    // }
+        Categoria cat = categoriaS.getById(prodotto.getCategoria_id());
+        prodottoS.insert(prodotto, cat);
+        return ResponseEntity.ok().build();
     }
+
+    
+    
+    
+
+    @Operation(
+        summary = "Rimuove un prodotto (Admin)",
+        description = "Riceve l'ID di un prodotto da eliminare. Se il prodotto esiste viene rimosso, "
+                    + "altrimenti viene restituito un errore 404."
+    )
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(responseCode = "200", description = "Prodotto rimosso con successo"),
+    				@ApiResponse(responseCode = "404", description = "Prodotto non trovato")
+    				}
+    		)
     
     @DeleteMapping("/admin/rimuovi")
-    public ResponseEntity<Void> rimuoviProdotto(@RequestBody @Valid RimuoviProdottoDTO prod) {
-    	try {
-    		prodottoS.delete(prod.getId());
-    		return ResponseEntity.ok().build();
-    	}
-    	catch (Exception e) {
-    		e.printStackTrace();
-    		return ResponseEntity.notFound().build();
-    	}
+    public ResponseEntity<Void> rimuoviProdotto(@Valid @RequestBody RimuoviProdottoDTO prod) {
+        try {
+            prodottoS.delete(prod.getId());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
     }
-    
-    
+
+    @Operation(
+    	summary = "Visualizza tutti i prodotti",
+        description = "Restituisce una lista di tutti i prodotti disponibili. "
+                    + "Se non è presente alcun prodotto, viene restituito errore 404 con un messaggio personalizzato."
+    )
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(responseCode = "200", description = "Lista di prodotti restituita con successo"),
+    				@ApiResponse(responseCode = "404", description = "Nessun prodotto disponibile")
+    				}
+    		)
     
     @GetMapping("/visualizza")
-    public ResponseEntity<List<ProdottoDTO>> getAllProdotti() throws NessunRisultatoException {	//throws qui è superfluo
-        List<ProdottoDTO> prodotti = prodottoS.getAllDTO();										//ma lo metto per completezza
-    
-    
+    public ResponseEntity<List<ProdottoDTO>> getAllProdotti() throws NessunRisultatoException {
+        List<ProdottoDTO> prodotti = prodottoS.getAllDTO();
+
         if (prodotti == null || prodotti.isEmpty()) {
             throw new NessunRisultatoException("Nessun prodotto disponibile al momento.");
         }
 
         return ResponseEntity.ok(prodotti);
     }
-
+    
+    
+    
+    
+    
     
     
     
