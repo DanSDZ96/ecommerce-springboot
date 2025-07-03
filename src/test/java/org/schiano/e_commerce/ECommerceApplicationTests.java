@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -36,6 +38,7 @@ class ECommerceApplicationTests {
 
     @Test
     @Order(1)
+    @WithMockUser(username = "FintoUtente", authorities = "ROLE_ADMIN" )
     public void testInserisciProdotto() throws Exception {
         NuovoProdottoDTO prodotto = new NuovoProdottoDTO();
         prodotto.setNome("Prodotto Test");
@@ -46,7 +49,7 @@ class ECommerceApplicationTests {
 
         String str = objectMapper.writeValueAsString(prodotto);
 
-        RequestBuilder request = post("/prodotti/admin/inserisci")
+        RequestBuilder request = post("/admin/inserisci")
             .contentType(MediaType.APPLICATION_JSON)
             .content(str);
 
@@ -56,6 +59,7 @@ class ECommerceApplicationTests {
 
     @Test
     @Order(2)
+    @WithMockUser(username = "FintoUtente", authorities = "ROLE_ADMIN" )
     public void testInserisciProdottoDatiNonValidi() throws Exception {
         NuovoProdottoDTO prodotto = new NuovoProdottoDTO();
         prodotto.setNome(""); 				// Nome vuoto, non valido
@@ -66,7 +70,7 @@ class ECommerceApplicationTests {
 
         String str = objectMapper.writeValueAsString(prodotto);
 
-        RequestBuilder request = post("/prodotti/admin/inserisci")
+        RequestBuilder request = post("/admin/inserisci")
             .contentType(MediaType.APPLICATION_JSON)
             .content(str);
         
@@ -79,8 +83,9 @@ class ECommerceApplicationTests {
     
     @Test
     @Order(3)
+    @WithUserDetails("daniel")
     public void testVisualizzaProdotti() throws Exception {
-        RequestBuilder request = get("/prodotti/visualizza")
+        RequestBuilder request = get("/utente/visualizza")
             .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(request)
@@ -90,13 +95,14 @@ class ECommerceApplicationTests {
 
     @Test
     @Order(4)
+    @WithUserDetails("daniel")
     public void testRimuoviProdotto() throws Exception {
         RimuoviProdottoDTO rimuovi = new RimuoviProdottoDTO();
         rimuovi.setId(1L);  // Id del prodotto da rimuovere (deve esistere)
 
         String json = objectMapper.writeValueAsString(rimuovi);
 
-        RequestBuilder request = delete("/prodotti/admin/rimuovi")
+        RequestBuilder request = delete("/admin/rimuovi")
             .contentType(MediaType.APPLICATION_JSON)
             .content(json);
 
