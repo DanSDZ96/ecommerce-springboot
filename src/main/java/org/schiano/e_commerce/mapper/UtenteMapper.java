@@ -3,7 +3,9 @@ package org.schiano.e_commerce.mapper;
 import org.schiano.e_commerce.dto.InsertUtenteDTO;
 import org.schiano.e_commerce.dto.UtenteDTO;
 import org.schiano.e_commerce.model.Utente;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UtenteMapper {
 
     public static Utente fromInsertUtenteDTO(InsertUtenteDTO dto) {

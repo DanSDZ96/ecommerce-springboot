@@ -24,8 +24,10 @@ public class UtenteServiceJPA implements UtenteService {
 
     public UtenteDTO save(InsertUtenteDTO utenteDTO) {
         Utente temp = utenteMapper.fromInsertUtenteDTO(utenteDTO);
+        temp.setUsername(utenteDTO.getUsername());
         temp.setRuolo(Ruolo.UTENTE);
-        temp.setPassword(passwordEncoder.encode(temp.getPassword()));
+        temp.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
+        temp.setEmail(utenteDTO.getEmail());
         temp = utenteRepository.save(temp);
         return utenteMapper.toUtenteDTO(temp);
     }

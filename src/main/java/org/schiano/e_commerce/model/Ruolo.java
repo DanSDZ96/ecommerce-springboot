@@ -6,10 +6,12 @@ import lombok.Getter;
 public enum Ruolo {
     UTENTE("UTENTE"),
     ADMIN("ADMIN");
+	
+	private final String nome;
 
-    private final String name;
-
-    Ruolo(String name) {
-        this.name = name;
-    }
+	Ruolo(String nome) {
+		this.nome = nome;
+		
+		
+	}
 }

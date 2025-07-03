@@ -2,6 +2,7 @@ package org.schiano.e_commerce.controller;
 
 import java.util.List;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.schiano.e_commerce.dto.NuovoProdottoDTO;
 import org.schiano.e_commerce.dto.ProdottoDTO;
 import org.schiano.e_commerce.dto.RimuoviProdottoDTO;
@@ -12,9 +13,8 @@ import org.schiano.e_commerce.service.definition.ProdottoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import jakarta.validation.Valid;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +27,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 
 @RestController
-@RequestMapping("/prodotti")
 public class ProdottoController {
 
     @Autowired
@@ -42,22 +41,13 @@ public class ProdottoController {
                     + "Se la categoria esiste, il prodotto viene inserito e viene restituito stato 200. "
                     + "Se i dati sono incompleti o la categoria non esiste, viene restituito errore."
     )
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						responseCode = "200", 
-    						description = "Prodotto inserito correttamente"
-    						),
-    				@ApiResponse(
-    						responseCode = "400", 
-    						description = "Dati non validi o categoria non trovata"
-    						
-    						//TODO aggiungere CONTENT + SCHEMA
-    						)
-    				}
-    		)
+    
     @PostMapping("/admin/inserisci")
-    public ResponseEntity<Void> inserisciProdotto(@Valid @RequestBody NuovoProdottoDTO prodotto) {
+    public ResponseEntity<Void> inserisciProdotto(@RequestBody NuovoProdottoDTO prodotto) {
+    	System.out.println("✅ SONO ENTRATO NEL CONTROLLER: /admin/inserisci");
+        org.springframework.security.core.Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+
         Categoria cat = categoriaS.getById(prodotto.getCategoria_id());
         prodottoS.insert(prodotto, cat);
         return ResponseEntity.ok().build();
@@ -102,9 +92,11 @@ public class ProdottoController {
     				}
     		)
     
-    @GetMapping("/visualizza")
+    @GetMapping("/utente/visualizza")
     public ResponseEntity<List<ProdottoDTO>> getAllProdotti() throws NessunRisultatoException {
-        List<ProdottoDTO> prodotti = prodottoS.getAllDTO();
+    	System.out.println("✅ SONO ENTRATO NEL CONTROLLER: /utente/visualizza");
+
+    	List<ProdottoDTO> prodotti = prodottoS.getAllDTO();
 
         if (prodotti == null || prodotti.isEmpty()) {
             throw new NessunRisultatoException("Nessun prodotto disponibile al momento.");
