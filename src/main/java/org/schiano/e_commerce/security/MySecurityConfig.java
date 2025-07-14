@@ -1,8 +1,6 @@
 package org.schiano.e_commerce.security;
 
 import org.schiano.e_commerce.model.Ruolo;
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

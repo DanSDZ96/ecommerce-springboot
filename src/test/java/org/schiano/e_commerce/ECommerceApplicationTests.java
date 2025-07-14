@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.schiano.e_commerce.ECommerceApplication;
 import org.schiano.e_commerce.dto.NuovoProdottoDTO;
 import org.schiano.e_commerce.dto.RimuoviProdottoDTO;
 
